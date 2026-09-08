@@ -34,7 +34,7 @@ def transform():
     global tiles, variant
     for cors, tile in level.tiles.items():
         gx, gy = cors
-        if tile['type'] in ('grass', 'stone'):
+        if tile['type'] in ('dirt', 'stone'):
             left = False
             right = False
             down = False
@@ -68,7 +68,7 @@ def transform():
             if top and not left and not down and right:
                 tile['variant'] = 9
          
-load_level(0)
+load_level(0, False)
 while True:
     clock.tick(120)
     screen.fill((0, 0, 0))
@@ -76,7 +76,12 @@ while True:
     m_pos = pygame.mouse.get_pos()
     tile_x = (m_pos[0] + level.camera_x) // tile_size * tile_size
     tile_y = (m_pos[1] + level.camera_y) // tile_size * tile_size
-    image:pygame.Surface = resources[resource_names[current_resource_index]][variant]
+    try:
+        image:pygame.Surface = resources[resource_names[current_resource_index]][variant]
+    except:
+        print(resource_names[current_resource_index])
+        print(variant)
+        raise
     render(screen)
     image.set_alpha(150)
     screen.blit(image, (tile_x - level.camera_x, tile_y - level.camera_y))
@@ -85,14 +90,16 @@ while True:
     for event in pygame.event.get():
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                num_x = tile_x // tile_size
+                num_y = tile_y // tile_size
                 tile = {
                     'type' : resource_names[current_resource_index],
                     'variant' : variant,
-                    'x' : tile_x,
-                    'y' : tile_y
+                    'x' : num_x,
+                    'y' : num_y
                 }
-                num_x = tile_x // tile_size
-                num_y = tile_y // tile_size
+                if (num_x, num_y) in tiles and tiles[(num_x, num_y)]['type'] == 'spawners' and tiles[(num_x, num_y)]['variant'] == 0:
+                    level.p_counter -= 1
                 if tile['type'] == 'spawners' and tile['variant'] == 0:
                     level.p_counter += 1
                 if level.p_counter <= 1:
@@ -100,7 +107,7 @@ while True:
                 else: 
                     level.p_counter = 1
                 if tile['type'] == 'decor':
-                    tile['variant'] = random.randint(0, 2)
+                    tile['variant'] = random.randint(0, 7)
             if event.button == 3:
                 num_x = tile_x // tile_size
                 num_y = tile_y // tile_size
@@ -127,6 +134,7 @@ while True:
                 del_count += 1
                 df_counter = counter
                 if del_count == 2:
+                    level.p_counter = 0
                     level.tiles.clear()
                     del_count = 0
                     df_counter = 0

@@ -4,6 +4,7 @@ import os
 def load_image(path, scale):
     image = pygame.image.load(path)
     image = pygame.transform.scale(image, (image.get_width() * scale, image.get_height() * scale))
+    image.set_colorkey((0, 0, 0))
     return image
 
 def load_images(path, scale):

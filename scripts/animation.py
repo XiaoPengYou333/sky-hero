@@ -4,6 +4,11 @@ from . import utils
 class Animation:
     def __init__(self, path, scale, timer):
         self.images = utils.load_images(path, scale)
+        self.fliped_images = []
+        for image in self.images:
+            image = pygame.transform.flip(image, True, False)
+            image.set_colorkey((0, 0, 0))
+            self.fliped_images.append(image)
         self.index = 0
         self.timer = timer
         self.str_timer = timer
@@ -12,8 +17,7 @@ class Animation:
         if dir == 'r':
             screen.blit(self.images[self.index], (x, y))
         else:
-            image = pygame.transform.flip(self.images[self.index], True, False)
-            screen.blit(image, (x, y))
+            screen.blit(self.fliped_images[self.index], (x, y))
     
     def get_current_image(self):
         return self.images[self.index]
