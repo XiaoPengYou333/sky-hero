@@ -79,9 +79,7 @@ while True:
     try:
         image:pygame.Surface = resources[resource_names[current_resource_index]][variant]
     except:
-        print(resource_names[current_resource_index])
-        print(variant)
-        raise
+        variant = 0
     render(screen)
     image.set_alpha(150)
     screen.blit(image, (tile_x - level.camera_x, tile_y - level.camera_y))

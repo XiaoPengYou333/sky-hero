@@ -11,6 +11,7 @@ bg = pygame.transform.scale(bg, screen.get_size())
 p_x, p_y = level.get_player_cor()
 enemy_cors = level.get_enemies()
 main_player = player.Player(p_x, p_y)
+space_timer = 0
 enemies = []
 for x, y in enemy_cors:
         enemies.append(enemy.Enemy(x, y))
@@ -31,6 +32,13 @@ while True:
         en.render(screen, level.camera_x, level.camera_y)
         en.update()
         en.ai()
+    # pressed = pygame.key.get_pressed()
+    # if pressed[pygame.K_SPACE]:
+    #     space_timer += 1
+    #     if main_player.time_in_air < 20:
+    #         main_player.s_y = (settings.JUMP_POWER - space_timer) / 60
+    # else:
+    #     space_timer = 0
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
@@ -39,7 +47,7 @@ while True:
                 main_player.mv_l = True
             if event.key == pygame.K_RIGHT:
                 main_player.mv_r = True
-            if event.key == pygame.K_SPACE and main_player.time_in_air < 5:
+            if event.key == pygame.K_SPACE:
                 main_player.s_y = settings.JUMP_POWER
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:

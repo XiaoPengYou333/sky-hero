@@ -1,12 +1,12 @@
 import pygame
 import pickle
-from . import utils
+from . import utils, settings
 
 p_counter = 0
 tiles = {}
 camera_x = 0
 camera_y = 0
-tile_size = 160
+tile_size = 180
 resources = {
     'decor' : utils.load_images('graph/resources/decor', tile_size / 16),
     'dirt' : utils.load_images('graph/resources/dirt', tile_size / 16),
@@ -88,3 +88,14 @@ def render(screen:pygame.Surface):
             )
         except IndexError:
             print((tile['type'], tile['variant']))
+
+def check_cliff(x, y):
+    x = x // tile_size
+    y = y // tile_size
+    for i in range(settings.CLIFF_HEIGHT):
+        if (x, y + i) in tiles:
+            return False
+    return True
+
+def check_block(x, y):
+            pass
